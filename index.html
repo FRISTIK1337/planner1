@@ -1,0 +1,303 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<meta name="theme-color" content="#0d1020" />
+<title>Ритм — недельный планер</title>
+<style>
+:root{
+  --bg:#0b0e1b;--panel:#12172a;--panel-2:#171d34;--line:rgba(180,190,235,.12);
+  --text:#f2f3ff;--muted:#929ab9;--accent:#9b8cff;--accent-2:#c0b5ff;
+  --hour:64px;--time-col:64px;--radius:20px;--shadow:0 24px 70px rgba(0,0,0,.35);
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{background:var(--bg);scroll-behavior:smooth}
+body{margin:0;background:radial-gradient(900px 500px at 12% -10%,rgba(119,93,255,.16),transparent 60%),radial-gradient(800px 500px at 100% 0%,rgba(61,183,199,.08),transparent 55%),var(--bg);color:var(--text);font:14px/1.45 Inter,ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;min-height:100vh}
+button,input,select,textarea{font:inherit}button{cursor:pointer;color:inherit}
+.app{max-width:1600px;margin:auto;padding:28px 30px 40px}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:20px;margin-bottom:24px}
+.brand{display:flex;align-items:center;gap:13px;min-width:220px}
+.logo{width:42px;height:42px;border-radius:14px;background:linear-gradient(145deg,#b6aaff,#7964e9);display:grid;place-items:center;box-shadow:0 8px 26px #8b79ff44;color:#111329;font-size:22px;font-weight:900}
+.brand h1{margin:0;font-size:20px;letter-spacing:-.5px}.brand p{margin:2px 0 0;color:var(--muted);font-size:12px}
+.top-actions{display:flex;align-items:center;gap:9px;flex-wrap:wrap}
+.btn{border:1px solid var(--line);background:var(--panel);border-radius:12px;padding:10px 14px;display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:.18s ease;color:#dfe2ff}
+.btn:hover{border-color:#8e80e8aa;background:#1a2039;transform:translateY(-1px)}.btn.primary{background:linear-gradient(135deg,#a99cff,#8170ec);color:#111329;border:0;font-weight:750;box-shadow:0 8px 24px #8d7afa33}.btn.primary:hover{filter:brightness(1.06)}.btn.icon{width:40px;height:40px;padding:0;font-size:18px}.btn.small{padding:7px 10px;font-size:12px;border-radius:10px}
+.panel{background:linear-gradient(180deg,rgba(21,27,49,.96),rgba(16,21,39,.96));border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.toolbar{display:flex;align-items:center;justify-content:space-between;gap:14px;padding:16px 18px;margin-bottom:14px}.week-control{display:flex;align-items:center;gap:8px}.week-title{min-width:210px}.week-title strong{display:block;font-size:16px;letter-spacing:-.2px}.week-title span{font-size:12px;color:var(--muted)}.toolbar-right{display:flex;gap:8px;align-items:center}.today-btn{font-weight:650}
+.categories{display:flex;align-items:center;gap:9px;flex-wrap:wrap;padding:13px 16px;margin-bottom:14px}.categories-label{color:var(--muted);font-size:12px;margin-right:3px}.cat-chip{display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);padding:6px 10px;border-radius:999px;font-size:12px;color:#dfe2ff;background:#171d33}.dot{width:8px;height:8px;border-radius:50%;display:inline-block}.cat-tools{margin-left:auto;display:flex;gap:7px}
+.mobile-day-picker{display:none;gap:7px;overflow:auto;padding:0 0 12px;scrollbar-width:none}.mobile-day-picker::-webkit-scrollbar{display:none}.day-pick{flex:1;min-width:53px;border:1px solid var(--line);background:#141a2d;border-radius:13px;padding:9px 5px;text-align:center;color:var(--muted)}.day-pick b{display:block;font-size:13px;color:var(--text)}.day-pick span{font-size:11px}.day-pick.active{background:#8f7cf1;color:#15152b;border-color:transparent;box-shadow:0 5px 18px #8f7cf144}.day-pick.active b{color:#15152b}
+.calendar-panel{overflow:hidden}.calendar-scroll{overflow:auto;max-height:calc(100vh - 295px);min-height:450px;scrollbar-color:#45486b transparent;scrollbar-width:thin}.calendar-grid{display:grid;grid-template-columns:var(--time-col) repeat(7,minmax(132px,1fr));min-width:1080px}.time-head,.day-head{height:66px;position:sticky;top:0;z-index:5;background:#151b30;border-bottom:1px solid var(--line)}.time-head{left:0;z-index:7;border-right:1px solid var(--line)}.day-head{padding:12px 10px 9px;text-align:center;border-right:1px solid var(--line)}.day-head .dow{font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:1px}.day-head .date{font-size:18px;font-weight:750;margin-top:1px}.day-head.today{background:linear-gradient(180deg,#28264a,#191e38)}.day-head.today .date{color:var(--accent-2)}
+.time-axis{position:relative;background:#11172a;border-right:1px solid var(--line);height:calc(var(--hour)*24)}.time-label{height:var(--hour);position:relative;text-align:center;color:#828ba9;font-size:11px;padding-top:4px}.day-column{position:relative;height:calc(var(--hour)*24);border-right:1px solid var(--line);background-color:rgba(16,21,39,.5);background-image:repeating-linear-gradient(to bottom,transparent 0,transparent calc(var(--hour) - 1px),rgba(168,179,224,.12) calc(var(--hour) - 1px),rgba(168,179,224,.12) var(--hour))}.day-column:nth-child(even){background-color:rgba(22,28,49,.44)}.day-column.today-col{background-color:rgba(114,99,220,.055)}.slot-hit{position:absolute;left:0;right:0;height:var(--hour);cursor:pointer;z-index:0}.slot-hit:hover{background:rgba(157,140,255,.06)}.event{position:absolute;z-index:2;border-radius:10px;padding:7px 8px 6px;overflow:hidden;cursor:pointer;border:1px solid color-mix(in srgb,var(--event-color),transparent 38%);background:color-mix(in srgb,var(--event-color),#11172b 79%);box-shadow:0 5px 14px rgba(0,0,0,.16);min-height:27px;text-align:left;transition:filter .15s,transform .15s}.event:hover{filter:brightness(1.16);z-index:4;transform:scale(1.01)}.event-title{font-weight:750;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block;color:#fbfaff}.event-time{display:block;font-size:10px;color:#d1d3ef;margin-top:2px;white-space:nowrap}.event-note{display:block;font-size:10px;color:#b5bad5;margin-top:4px;overflow:hidden;text-overflow:ellipsis}.event-dot{display:inline-block;width:6px;height:6px;border-radius:50%;margin-right:5px;vertical-align:1px;background:var(--event-color)}.empty-hint{padding:24px;text-align:center;color:var(--muted);font-size:12px;display:none}
+.footer-stats{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 17px;margin-top:14px;color:var(--muted);font-size:12px}.stats{display:flex;gap:18px;flex-wrap:wrap}.stats b{color:#ececff;font-size:13px;margin-right:4px}.save-state{display:flex;align-items:center;gap:7px}.save-dot{height:7px;width:7px;background:#5bd6a1;border-radius:50%;box-shadow:0 0 10px #5bd6a177}
+/* Modal */
+.modal-backdrop{position:fixed;inset:0;background:rgba(4,6,15,.72);backdrop-filter:blur(8px);z-index:20;display:none;align-items:center;justify-content:center;padding:18px}.modal-backdrop.open{display:flex}.modal{width:min(520px,100%);background:#171d34;border:1px solid #55527c66;border-radius:22px;padding:22px;box-shadow:0 30px 100px #0009;max-height:92vh;overflow:auto}.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}.modal-head h2{font-size:18px;margin:0}.close{border:0;background:#252c48;width:34px;height:34px;border-radius:10px;font-size:20px;color:#c5c9e2}.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:13px}.field{display:flex;flex-direction:column;gap:6px}.field.full{grid-column:1/-1}.field label{font-size:12px;color:#aeb5d2}.field-hint{margin:0;color:#929ab9;font-size:11px;line-height:1.45;background:#11172b;border:1px solid var(--line);padding:9px 11px;border-radius:10px}.field input,.field select,.field textarea{width:100%;background:#0f1426;border:1px solid #343b5b;border-radius:11px;color:#f3f3ff;padding:11px 12px;outline:none}.field textarea{resize:vertical;min-height:76px}.field input:focus,.field select:focus,.field textarea:focus{border-color:#9d8cff;box-shadow:0 0 0 3px #9d8cff20}.modal-actions{display:flex;justify-content:space-between;gap:9px;margin-top:19px}.right-actions{display:flex;gap:8px;margin-left:auto}.hidden{display:none!important}
+.category-list{display:grid;gap:8px;margin-top:12px}.category-row{display:flex;align-items:center;gap:10px;background:#10162a;border:1px solid var(--line);padding:9px 11px;border-radius:12px}.category-row span{flex:1}.category-row input[type=color]{width:34px;height:30px;padding:2px;border:0;background:transparent}.category-row button{border:0;background:transparent;color:#b2b8d3;font-size:17px}.manage-note{font-size:12px;color:var(--muted);margin:0 0 12px}
+.toast{position:fixed;bottom:22px;left:50%;transform:translate(-50%,20px);background:#252d49;border:1px solid #66608f;color:#f4f3ff;padding:11px 16px;border-radius:12px;box-shadow:var(--shadow);opacity:0;pointer-events:none;transition:.25s;z-index:40;font-size:13px}.toast.show{opacity:1;transform:translate(-50%,0)}
+@media(max-width:900px){.app{padding:20px 16px 30px}.calendar-scroll{max-height:calc(100vh - 280px)}.calendar-grid{min-width:980px;grid-template-columns:58px repeat(7,minmax(120px,1fr))}.topbar{margin-bottom:17px}}
+@media(max-width:680px){
+  :root{--hour:58px;--time-col:54px}
+  .app{padding:15px 12px 24px}.topbar{align-items:flex-start;margin-bottom:14px}.brand{min-width:0;gap:10px}.logo{width:38px;height:38px;border-radius:13px}.brand h1{font-size:18px}.brand p{font-size:11px}.top-actions .btn:not(.primary){display:none}.top-actions .primary{padding:10px 12px;font-size:12px}
+  .toolbar{padding:12px;gap:8px;align-items:center}.week-control{gap:5px}.week-title{min-width:0;flex:1;text-align:center}.week-title strong{font-size:13px}.week-title span{font-size:10px}.toolbar-right .btn{padding:8px 9px;font-size:11px}.toolbar-right .today-btn{display:none}
+  .categories{padding:10px 11px;gap:6px}.categories-label{width:100%;margin-bottom:1px}.cat-chip{font-size:10px;padding:5px 8px}.cat-tools{margin-left:0}.cat-tools .btn{font-size:11px;padding:6px 8px}
+  .mobile-day-picker{display:flex}.calendar-scroll{max-height:none;min-height:400px;overflow-y:auto;overflow-x:hidden}.calendar-grid{min-width:0;grid-template-columns:var(--time-col) minmax(0,1fr)}.day-head{display:none}.day-head.active-mobile{display:block;grid-column:2;height:57px;position:sticky;top:0;z-index:5}.time-head{height:57px;position:sticky;top:0}.time-axis{height:calc(var(--hour)*24)}.time-label{font-size:10px;padding-top:3px}.day-column{display:none;height:calc(var(--hour)*24);grid-column:2}.day-column.active-mobile{display:block}.event{padding:6px 7px;border-radius:9px}.event-title{font-size:12px}.event-time{font-size:10px}
+  .footer-stats{padding:11px 12px;align-items:flex-start;flex-direction:column}.stats{gap:12px}.save-state{align-self:flex-end}
+  .modal{padding:18px;border-radius:18px}.form-grid{gap:10px}.field input,.field select,.field textarea{padding:10px}.modal-actions{align-items:center}.modal-actions .btn{font-size:12px;padding:9px 11px}
+}
+@media(max-width:380px){.app{padding-left:8px;padding-right:8px}.brand p{display:none}.top-actions .primary{padding:9px}.day-pick{min-width:44px}.form-grid{grid-template-columns:1fr}.field.full{grid-column:auto}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header class="topbar">
+    <div class="brand"><div class="logo">✦</div><div><h1>Ритм</h1><p>Твой план. Твой темп.</p></div></div>
+    <div class="top-actions">
+      <button class="btn" id="exportBtn" title="Скачать резервную копию">↧ Экспорт</button>
+      <button class="btn" id="importBtn" title="Загрузить резервную копию">↥ Импорт</button>
+      <button class="btn primary" id="addBtn">＋ Добавить дело</button>
+      <input type="file" id="importFile" accept="application/json,.json" class="hidden" />
+    </div>
+  </header>
+
+  <section class="toolbar panel">
+    <div class="week-control">
+      <button class="btn icon" id="prevWeek" aria-label="Предыдущая неделя">‹</button>
+      <div class="week-title"><strong id="weekTitle">Эта неделя</strong><span id="weekSubtitle">План на 7 дней</span></div>
+      <button class="btn icon" id="nextWeek" aria-label="Следующая неделя">›</button>
+    </div>
+    <div class="toolbar-right"><button class="btn today-btn" id="todayBtn">Сегодня</button></div>
+  </section>
+
+  <section class="categories panel">
+    <span class="categories-label">МОИ КАТЕГОРИИ</span>
+    <div id="categoryChips" style="display:contents"></div>
+    <div class="cat-tools"><button class="btn small" id="manageCatsBtn">⚙ Категории</button></div>
+  </section>
+
+  <nav class="mobile-day-picker" id="mobileDays" aria-label="Выбрать день"></nav>
+
+  <section class="calendar-panel panel">
+    <div class="calendar-scroll" id="calendarScroll">
+      <div class="calendar-grid" id="calendarGrid"></div>
+    </div>
+    <div class="empty-hint" id="emptyHint">Пока нет запланированных дел. Нажми на свободный час или «Добавить дело».</div>
+  </section>
+
+  <footer class="footer-stats panel">
+    <div class="stats"><span><b id="eventCount">0</b> дел на неделе</span><span><b id="plannedHours">0 ч</b> запланировано</span><span><b id="freeDays">7</b> свободных дней</span></div>
+    <div class="save-state"><i class="save-dot"></i><span id="saveStateText">Автосохранение на этом устройстве</span></div>
+  </footer>
+</div>
+
+<!-- Add/edit event modal -->
+<div class="modal-backdrop" id="eventModal" role="dialog" aria-modal="true" aria-labelledby="eventModalTitle">
+  <div class="modal">
+    <div class="modal-head"><h2 id="eventModalTitle">Новое дело</h2><button class="close" data-close="eventModal" aria-label="Закрыть">×</button></div>
+    <form id="eventForm">
+      <div class="form-grid">
+        <div class="field full"><label for="eventTitle">Название занятия</label><input id="eventTitle" maxlength="70" placeholder="Например, работа над проектом" required /></div>
+        <div class="field"><label for="eventDate">День начала</label><input id="eventDate" type="date" required /></div>
+        <div class="field"><label for="eventEndDate">День окончания</label><input id="eventEndDate" type="date" required /></div>
+        <div class="field"><label for="eventStart">Время начала</label><input id="eventStart" type="time" value="09:00" required /></div>
+        <div class="field"><label for="eventEnd">Время окончания</label><input id="eventEnd" type="time" value="10:00" required /></div>
+        <div class="field full"><p class="field-hint">Можно заканчивать на следующий день или позже. Например: четверг 18:00 → пятница 05:00.</p></div>
+        <div class="field full"><label for="eventCategory">Категория</label><select id="eventCategory"></select></div>
+        <div class="field full"><label for="eventNotes">Заметка (необязательно)</label><textarea id="eventNotes" maxlength="220" placeholder="Что нужно сделать, что взять с собой…"></textarea></div>
+      </div>
+      <div class="modal-actions"><button class="btn" type="button" id="deleteEventBtn" style="color:#ff929f">Удалить</button><div class="right-actions"><button class="btn" type="button" data-close="eventModal">Отмена</button><button class="btn primary" type="submit">Сохранить</button></div></div>
+    </form>
+  </div>
+</div>
+
+<!-- Category manager -->
+<div class="modal-backdrop" id="categoryModal" role="dialog" aria-modal="true" aria-labelledby="categoryModalTitle">
+  <div class="modal">
+    <div class="modal-head"><h2 id="categoryModalTitle">Мои категории</h2><button class="close" data-close="categoryModal" aria-label="Закрыть">×</button></div>
+    <p class="manage-note">Добавляй собственные занятия и выбирай для них цвет. Категории будут доступны при создании событий.</p>
+    <div class="form-grid"><div class="field"><label for="newCategoryName">Название</label><input id="newCategoryName" maxlength="24" placeholder="Например, Хобби" /></div><div class="field"><label for="newCategoryColor">Цвет</label><input id="newCategoryColor" type="color" value="#8e7cf6" style="height:42px;padding:4px" /></div></div>
+    <div style="display:flex;justify-content:flex-end;margin-top:10px"><button class="btn primary" id="addCategoryBtn" type="button">＋ Добавить категорию</button></div>
+    <div class="category-list" id="categoryList"></div>
+    <div class="modal-actions"><span class="manage-note" style="align-self:center">Изменения сохраняются автоматически</span><div class="right-actions"><button class="btn" data-close="categoryModal">Готово</button></div></div>
+  </div>
+</div>
+<div class="toast" id="toast"></div>
+
+<script>
+(() => {
+  const STORE_KEY = 'ritmPlanner_v1';
+  const DEFAULT_CATS = [
+    {id:'work',name:'Работа',color:'#8f7cf6'},
+    {id:'study',name:'Учёба',color:'#55b8da'},
+    {id:'sport',name:'Тренировка',color:'#e28bba'},
+    {id:'home',name:'Уборка',color:'#e5ad62'},
+    {id:'sleep',name:'Сон',color:'#778bd9'},
+    {id:'rest',name:'Отдых',color:'#65c6a6'},
+    {id:'food',name:'Еда',color:'#d5c36d'},
+    {id:'other',name:'Другое',color:'#9ba4b8'}
+  ];
+  const $ = id => document.getElementById(id);
+  const pad = n => String(n).padStart(2,'0');
+  const toISO = d => `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`;
+  const parseISO = s => {const [y,m,d]=s.split('-').map(Number);return new Date(y,m-1,d,12)};
+  // Work with local calendar dates (not UTC) to avoid timezone shifts.
+  const dayStart = iso => {const d=parseISO(iso);d.setHours(0,0,0,0);return d};
+  const dateTime = (iso,t) => {const d=parseISO(iso);const [h,m]=t.split(':').map(Number);d.setHours(h,m,0,0);return d};
+  const eventInterval = e => ({start:dateTime(e.date,e.start),end:dateTime(e.endDate||e.date,e.end)});
+  const fmtDateShort = iso => fmtShort(parseISO(iso));
+  const addDays = (d,n) => {const x=new Date(d);x.setDate(x.getDate()+n);return x};
+  const mondayOf = d => {const x=new Date(d);x.setHours(12,0,0,0);x.setDate(x.getDate()-((x.getDay()+6)%7));return x};
+  const fmtShort = d => d.toLocaleDateString('ru-RU',{day:'numeric',month:'short'}).replace('.','');
+  const fmtFull = d => d.toLocaleDateString('ru-RU',{day:'numeric',month:'long'});
+  const mins = t => {const [h,m]=t.split(':').map(Number);return h*60+m};
+  const time = m => `${pad(Math.floor(m/60))}:${pad(m%60)}`;
+  const escapeHTML = s => String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  const uid = () => 'id_'+Date.now().toString(36)+'_'+Math.random().toString(36).slice(2,8);
+  const load = () => {try{const x=JSON.parse(localStorage.getItem(STORE_KEY));if(x&&Array.isArray(x.events)&&Array.isArray(x.categories))return x}catch(e){}return {events:[],categories:DEFAULT_CATS.map(x=>({...x}))}};
+  let state=load();
+  // Ensure built-in categories exist if a partially edited backup is loaded.
+  if(!state.categories.length) state.categories=DEFAULT_CATS.map(x=>({...x}));
+  let weekStart=mondayOf(new Date());
+  let activeMobileDate=toISO(new Date());
+  let editingId=null;
+  const save=()=>{
+    try{
+      localStorage.setItem(STORE_KEY,JSON.stringify(state));
+      const status=$('saveStateText');if(status)status.textContent='Сохранено на этом устройстве';
+      return true;
+    }catch(err){
+      console.error('Ritm planner: local save failed',err);
+      const status=$('saveStateText');if(status)status.textContent='Не удалось сохранить в браузере — скачай резервную копию';
+      return false;
+    }
+  };
+  const toast=msg=>{const el=$('toast');el.textContent=msg;el.classList.add('show');clearTimeout(toast.t);toast.t=setTimeout(()=>el.classList.remove('show'),2300)};
+  const category=id=>state.categories.find(c=>c.id===id)||state.categories.find(c=>c.id==='other')||{name:'Другое',color:'#9ba4b8'};
+  const getWeekDates=()=>Array.from({length:7},(_,i)=>addDays(weekStart,i));
+  const allEventsForWeek=()=>{const start=dayStart(toISO(weekStart)),end=dayStart(toISO(addDays(weekStart,7)));return state.events.filter(e=>{const x=eventInterval(e);return x.start<end&&x.end>start})};
+  function renderCategories(){
+    $('categoryChips').innerHTML=state.categories.map(c=>`<span class="cat-chip"><i class="dot" style="background:${c.color}"></i>${escapeHTML(c.name)}</span>`).join('');
+    $('eventCategory').innerHTML=state.categories.map(c=>`<option value="${escapeHTML(c.id)}">${escapeHTML(c.name)}</option>`).join('');
+    $('categoryList').innerHTML=state.categories.map(c=>`<div class="category-row" data-id="${escapeHTML(c.id)}"><i class="dot" style="width:10px;height:10px;background:${c.color}"></i><span>${escapeHTML(c.name)}</span><input type="color" value="${c.color}" aria-label="Цвет категории ${escapeHTML(c.name)}" data-color="${escapeHTML(c.id)}" /><button type="button" data-rename="${escapeHTML(c.id)}" title="Переименовать">✎</button>${DEFAULT_CATS.some(d=>d.id===c.id)?'':`<button type="button" data-remove="${escapeHTML(c.id)}" title="Удалить категорию">×</button>`}</div>`).join('');
+  }
+  function renderMobileDays(dates){
+    $('mobileDays').innerHTML=dates.map(d=>{const iso=toISO(d);const isActive=iso===activeMobileDate;return `<button class="day-pick ${isActive?'active':''}" data-day="${iso}"><b>${d.toLocaleDateString('ru-RU',{weekday:'short'}).replace('.','')}</b><span>${pad(d.getDate())}</span></button>`}).join('');
+    if(!dates.some(d=>toISO(d)===activeMobileDate))activeMobileDate=toISO(dates[0]);
+  }
+  function segmentsForDay(event,iso){
+    const range=eventInterval(event);if(!(range.end>range.start))return null;
+    const start=dayStart(iso),end=dayStart(toISO(addDays(parseISO(iso),1)));
+    const clippedStart=Math.max(range.start.getTime(),start.getTime());
+    const clippedEnd=Math.min(range.end.getTime(),end.getTime());
+    if(clippedEnd<=clippedStart)return null;
+    return {event,startMin:(clippedStart-start.getTime())/60000,endMin:(clippedEnd-start.getTime())/60000,continuesBefore:range.start<start,continuesAfter:range.end>end};
+  }
+  function allocateLanes(segments){
+    const sorted=[...segments].sort((a,b)=>a.startMin-b.startMin||a.endMin-b.endMin);
+    const lanes=[];
+    sorted.forEach(e=>{let lane=lanes.findIndex(lastEnd=>lastEnd<=e.startMin);if(lane<0){lane=lanes.length;lanes.push(e.endMin)}else lanes[lane]=e.endMin;e._lane=lane;});
+    sorted.forEach(e=>{const overlaps=sorted.filter(x=>x.startMin<e.endMin&&x.endMin>e.startMin);e._laneCount=Math.max(1,...overlaps.map(x=>x._lane+1));});
+    return sorted;
+  }
+  function render(){
+    const hourPx=window.matchMedia('(max-width: 680px)').matches?58:64;
+    const dates=getWeekDates();const weekEnd=dates[6];
+    $('weekTitle').textContent=`${fmtShort(weekStart)} — ${fmtShort(weekEnd)}`;
+    $('weekSubtitle').textContent=`${weekStart.getFullYear()} · ${weekStart.toLocaleDateString('ru-RU',{month:'long'})}`;
+    renderMobileDays(dates);
+    const isToday=iso=>iso===toISO(new Date());
+    let html='<div class="time-head"></div>';
+    dates.forEach(d=>{const iso=toISO(d);html+=`<div class="day-head ${isToday(iso)?'today':''} ${iso===activeMobileDate?'active-mobile':''}" data-head-day="${iso}"><div class="dow">${d.toLocaleDateString('ru-RU',{weekday:'short'}).replace('.','')}</div><div class="date">${pad(d.getDate())}</div></div>`});
+    html+='<div class="time-axis">'+Array.from({length:24},(_,h)=>`<div class="time-label">${pad(h)}:00</div>`).join('')+'</div>';
+    dates.forEach(d=>{
+      const iso=toISO(d);const dayEvents=allocateLanes(state.events.map(e=>segmentsForDay(e,iso)).filter(Boolean));
+      html+=`<div class="day-column ${isToday(iso)?'today-col':''} ${iso===activeMobileDate?'active-mobile':''}" data-column-day="${iso}">`;
+      for(let h=0;h<24;h++) html+=`<div class="slot-hit" style="top:${h*hourPx}px" data-date="${iso}" data-hour="${h}" aria-label="Добавить дело ${h}:00"></div>`;
+      dayEvents.forEach(seg=>{
+        const e=seg.event,start=seg.startMin,end=seg.endMin,c=category(e.categoryId);const top=(start/60)*hourPx,height=Math.max(25,((end-start)/60)*hourPx-3);const laneCount=Math.max(seg._laneCount,1),width=100/laneCount,left=seg._lane*width;
+        let label;
+        if(seg.continuesBefore) label=`Продолжение · 00:00 — ${time(end)}`;
+        else if(seg.continuesAfter) label=`${time(start)} — 00:00 · далее`;
+        else label=`${time(start)} — ${time(end)}`;
+        const fullTime=`${fmtDateShort(e.date)} ${e.start} → ${fmtDateShort(e.endDate||e.date)} ${e.end}`;
+        html+=`<button class="event" data-event="${escapeHTML(e.id)}" data-segment-date="${iso}" style="--event-color:${c.color};top:${top+2}px;height:${height}px;left:calc(${left}% + 3px);width:calc(${width}% - 6px)" title="${escapeHTML(e.title)} · ${escapeHTML(fullTime)}"><span class="event-title"><i class="event-dot"></i>${escapeHTML(e.title)}</span><span class="event-time">${escapeHTML(label)}</span>${height>76&&e.notes?`<span class="event-note">${escapeHTML(e.notes)}</span>`:''}</button>`;
+      });
+      html+='</div>';
+    });
+    $('calendarGrid').innerHTML=html;
+    const ev=allEventsForWeek();
+    const ws=dayStart(toISO(weekStart)).getTime(),we=dayStart(toISO(addDays(weekStart,7))).getTime();
+    const total=ev.reduce((n,e)=>{const x=eventInterval(e);return n+(Math.max(0,Math.min(x.end.getTime(),we)-Math.max(x.start.getTime(),ws))/3600000)},0);
+    const days=new Set();dates.forEach(d=>{const ds=dayStart(toISO(d)).getTime(),de=dayStart(toISO(addDays(d,1))).getTime();if(ev.some(e=>{const x=eventInterval(e);return x.start.getTime()<de&&x.end.getTime()>ds}))days.add(toISO(d));});
+    $('eventCount').textContent=ev.length;$('plannedHours').textContent=`${Number.isInteger(total)?total:total.toFixed(1)} ч`;$('freeDays').textContent=7-days.size;
+    $('emptyHint').style.display=ev.length?'none':'block';
+  }
+  let autoEndDate=false;
+  let lastStartDate='';
+  function syncEndDateMin(){const startDate=$('eventDate').value;$('eventEndDate').min=startDate;if($('eventEndDate').value<startDate)$('eventEndDate').value=startDate;}
+  function autoAdjustEndDate(){
+    const sd=$('eventDate').value,ed=$('eventEndDate').value,st=$('eventStart').value,en=$('eventEnd').value;
+    if(!sd||!ed||!st||!en)return;
+    if(ed===sd&&mins(en)<=mins(st)){$('eventEndDate').value=toISO(addDays(parseISO(sd),1));autoEndDate=true;}
+    else if(autoEndDate&&ed===toISO(addDays(parseISO(sd),1))&&mins(en)>mins(st)){$('eventEndDate').value=sd;autoEndDate=false;}
+    syncEndDateMin();
+  }
+  function openEventModal(date,hour,event=null){
+    editingId=event?.id||null;autoEndDate=false;$('eventModalTitle').textContent=event?'Изменить дело':'Новое дело';
+    const startDate=event?.date||date||toISO(new Date());lastStartDate=startDate;
+    const startTime=event?.start||(hour!==undefined?`${pad(hour)}:00`:'09:00');
+    const endsNextDay=!event&&hour===23;
+    $('eventTitle').value=event?.title||'';$('eventDate').value=startDate;
+    $('eventEndDate').value=event?.endDate|| (endsNextDay?toISO(addDays(parseISO(startDate),1)):startDate);
+    $('eventCategory').value=event?.categoryId||state.categories[0]?.id||'other';$('eventStart').value=startTime;
+    $('eventEnd').value=event?.end||(hour!==undefined?(endsNextDay?'00:00':`${pad(hour+1)}:00`):'10:00');
+    $('eventNotes').value=event?.notes||'';syncEndDateMin();$('deleteEventBtn').classList.toggle('hidden',!event);
+    $('eventModal').classList.add('open');setTimeout(()=>$('eventTitle').focus(),60);
+  }
+  function closeModal(id){$(id).classList.remove('open')}
+  function validEvent(){
+    const title=$('eventTitle').value.trim(),date=$('eventDate').value,endDate=$('eventEndDate').value,start=$('eventStart').value,end=$('eventEnd').value;
+    if(!title||!date||!endDate||!start||!end)return 'Заполни название, дни и время.';
+    if(endDate<date)return 'Дата окончания не может быть раньше даты начала.';
+    if(dateTime(endDate,end)<=dateTime(date,start))return 'Окончание должно быть позже начала. Проверь дату и время.';
+    return null;
+  }
+  $('eventDate').addEventListener('change',()=>{const sd=$('eventDate').value,oldEnd=$('eventEndDate').value;let offset=0;if(lastStartDate&&oldEnd){offset=Math.max(0,Math.round((dayStart(oldEnd).getTime()-dayStart(lastStartDate).getTime())/86400000));}$('eventEndDate').value=toISO(addDays(parseISO(sd),offset));lastStartDate=sd;autoEndDate=false;syncEndDateMin();autoAdjustEndDate();});
+  $('eventStart').addEventListener('change',autoAdjustEndDate);
+  $('eventEnd').addEventListener('change',autoAdjustEndDate);
+  $('eventEndDate').addEventListener('change',()=>{autoEndDate=false;syncEndDateMin();});
+  $('eventForm').addEventListener('submit',e=>{
+    e.preventDefault();const err=validEvent();if(err){toast(err);return;}
+    const item={id:editingId||uid(),title:$('eventTitle').value.trim(),date:$('eventDate').value,endDate:$('eventEndDate').value,categoryId:$('eventCategory').value,start:$('eventStart').value,end:$('eventEnd').value,notes:$('eventNotes').value.trim()};
+    if(editingId){const idx=state.events.findIndex(x=>x.id===editingId);if(idx>=0)state.events[idx]=item;}else state.events.push(item);
+    const viewedDate=activeMobileDate;const didSave=save();weekStart=mondayOf(parseISO(item.date));activeMobileDate=(viewedDate>=item.date&&viewedDate<=(item.endDate||item.date))?viewedDate:item.date;closeModal('eventModal');render();toast(didSave?(editingId?'Изменения сохранены':'Дело добавлено в расписание'):'Добавлено, но браузер не сохранил данные. Скачай резервную копию.');editingId=null;
+  });
+  $('deleteEventBtn').addEventListener('click',()=>{if(!editingId)return;if(confirm('Удалить это дело из расписания?')){state.events=state.events.filter(e=>e.id!==editingId);save();closeModal('eventModal');render();toast('Дело удалено');editingId=null;}});
+  $('addBtn').addEventListener('click',()=>openEventModal(activeMobileDate));
+  $('calendarGrid').addEventListener('click',e=>{const eventBtn=e.target.closest('[data-event]');if(eventBtn){const item=state.events.find(x=>x.id===eventBtn.dataset.event);if(item){activeMobileDate=eventBtn.dataset.segmentDate||item.date;openEventModal(item.date,undefined,item);}return;}const slot=e.target.closest('[data-date]');if(slot){openEventModal(slot.dataset.date,Number(slot.dataset.hour));}});
+  $('mobileDays').addEventListener('click',e=>{const b=e.target.closest('[data-day]');if(!b)return;activeMobileDate=b.dataset.day;render();});
+  $('prevWeek').addEventListener('click',()=>{weekStart=addDays(weekStart,-7);activeMobileDate=toISO(weekStart);render()});
+  $('nextWeek').addEventListener('click',()=>{weekStart=addDays(weekStart,7);activeMobileDate=toISO(weekStart);render()});
+  $('todayBtn').addEventListener('click',()=>{weekStart=mondayOf(new Date());activeMobileDate=toISO(new Date());render()});
+  $('manageCatsBtn').addEventListener('click',()=>{$('categoryModal').classList.add('open');renderCategories()});
+  $('addCategoryBtn').addEventListener('click',()=>{const name=$('newCategoryName').value.trim();if(!name){toast('Введи название категории');return;}if(state.categories.some(c=>c.name.toLowerCase()===name.toLowerCase())){toast('Такая категория уже есть');return;}state.categories.push({id:uid(),name,color:$('newCategoryColor').value});$('newCategoryName').value='';save();renderCategories();render();toast('Категория добавлена');});
+  $('categoryList').addEventListener('change',e=>{const id=e.target.dataset.color;if(!id)return;const c=category(id);c.color=e.target.value;save();renderCategories();render();});
+  $('categoryList').addEventListener('click',e=>{
+    const rename=e.target.closest('[data-rename]');if(rename){const c=category(rename.dataset.rename);const n=prompt('Новое название категории:',c.name);if(n&&n.trim()){c.name=n.trim().slice(0,24);save();renderCategories();render();}return;}
+    const del=e.target.closest('[data-remove]');if(del){const id=del.dataset.remove;if(!confirm('Удалить категорию? Уже созданные дела останутся в расписании как «Другое».'))return;state.events.forEach(ev=>{if(ev.categoryId===id)ev.categoryId='other'});state.categories=state.categories.filter(c=>c.id!==id);save();renderCategories();render();toast('Категория удалена');}
+  });
+  document.querySelectorAll('[data-close]').forEach(b=>b.addEventListener('click',()=>closeModal(b.dataset.close)));
+  document.querySelectorAll('.modal-backdrop').forEach(bg=>bg.addEventListener('click',e=>{if(e.target===bg)closeModal(bg.id)}));
+  document.addEventListener('keydown',e=>{if(e.key==='Escape')document.querySelectorAll('.modal-backdrop.open').forEach(m=>closeModal(m.id));});
+  $('exportBtn').addEventListener('click',()=>{const blob=new Blob([JSON.stringify(state,null,2)],{type:'application/json'});const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download='ritm-planner-backup.json';a.click();URL.revokeObjectURL(a.href);toast('Резервная копия скачана');});
+  $('importBtn').addEventListener('click',()=>$('importFile').click());
+  $('importFile').addEventListener('change',async e=>{const f=e.target.files[0];if(!f)return;try{const x=JSON.parse(await f.text());if(!Array.isArray(x.events)||!Array.isArray(x.categories))throw new Error();if(!confirm('Импорт заменит текущее расписание и категории. Продолжить?'))return;state={events:x.events,categories:x.categories};save();renderCategories();render();toast('Данные импортированы');}catch(err){toast('Не удалось прочитать файл резервной копии');}e.target.value='';});
+  // Reflow the timeline after device rotation or a responsive breakpoint change.
+  window.addEventListener('resize',()=>render());
+  // Seed a clean category selector and initial schedule.
+  renderCategories();render();
+  try { const probe='__ritm_storage_test__';localStorage.setItem(probe,'1');localStorage.removeItem(probe); } catch(err) { const status=$('saveStateText');if(status)status.textContent='Браузер блокирует автосохранение — используй экспорт резервной копии'; }
+})();
+</script>
+</body>
+</html>
